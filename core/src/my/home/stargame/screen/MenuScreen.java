@@ -9,19 +9,24 @@ import my.home.stargame.base.BaseScreen;
 import my.home.stargame.exception.GameException;
 import my.home.stargame.math.Rect;
 import my.home.stargame.sprites.Background;
+import my.home.stargame.sprites.Logo;
 
 public class MenuScreen extends BaseScreen {
 
     private Texture bg;
+    private Texture logoPicture;
     private Background background;
+    private Logo logo;
     private Vector2 pos;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/bg.png");
+        logoPicture = new Texture("badlogic.jpg");
         try {
             background = new Background(bg);
+            logo = new Logo(logoPicture);
         } catch (GameException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -39,21 +44,25 @@ public class MenuScreen extends BaseScreen {
     public void dispose() {
         batch.dispose();
         bg.dispose();
+        logoPicture.dispose();
         super.dispose();
     }
 
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
+        logo.resize(worldBounds);
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         pos.set(touch);
+        logo.touchDown(touch, pointer, button);
         return false;
     }
 
     private void update(float delta) {
+        logo.logoUpdate();
     }
 
     private void draw() {
@@ -61,6 +70,7 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+        logo.draw(batch);
         batch.end();
     }
 
