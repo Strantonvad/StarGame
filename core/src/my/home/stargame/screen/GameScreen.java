@@ -11,6 +11,7 @@ import my.home.stargame.exception.GameException;
 import my.home.stargame.math.Rect;
 import my.home.stargame.pool.BulletPool;
 import my.home.stargame.sprites.Background;
+import my.home.stargame.sprites.EnemyShip0;
 import my.home.stargame.sprites.MainShip;
 import my.home.stargame.sprites.Star;
 
@@ -28,6 +29,7 @@ public class GameScreen extends BaseScreen {
     private BulletPool bulletPool;
 
     private MainShip mainShip;
+    private EnemyShip0 enemyShip0;
 
     @Override
     public void show() {
@@ -54,6 +56,7 @@ public class GameScreen extends BaseScreen {
             star.resize(worldBounds);
         }
         mainShip.resize(worldBounds);
+        enemyShip0.resize(worldBounds);
     }
 
     @Override
@@ -96,6 +99,7 @@ public class GameScreen extends BaseScreen {
                 stars[i] =  new Star(atlas);
             }
             mainShip = new MainShip(atlas, bulletPool);
+            enemyShip0 = new EnemyShip0(atlas);
         } catch (GameException e) {
             throw new RuntimeException(e);
         }
@@ -107,6 +111,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.update(delta);
         bulletPool.updateActiveSprites(delta);
+        enemyShip0.update(delta);
     }
 
     public void freeAllDestroyed() {
@@ -123,6 +128,7 @@ public class GameScreen extends BaseScreen {
         }
         mainShip.draw(batch);
         bulletPool.drawActiveSprites(batch);
+        enemyShip0.draw(batch);
         batch.end();
     }
 }

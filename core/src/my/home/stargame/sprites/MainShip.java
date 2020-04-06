@@ -1,6 +1,8 @@
 package my.home.stargame.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import my.home.stargame.base.Sprite;
 import my.home.stargame.exception.GameException;
 import my.home.stargame.math.Rect;
+import my.home.stargame.math.Rnd;
 import my.home.stargame.pool.BulletPool;
 
 public class MainShip extends Sprite {
@@ -15,6 +18,7 @@ public class MainShip extends Sprite {
     private static final float SHIP_HEIGHT = 0.15f;
     private static final float BOTTOM_MARGIN = 0.05f;
     private static final int INVALID_POINTER = -1;
+    private static float SHOOT_SPEED = 0.15f;
 
     private Rect worldBounds;
     private BulletPool bulletPool;
@@ -30,6 +34,10 @@ public class MainShip extends Sprite {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
+    private float shootTimer;
+
+    private Sound bulletSound;
+
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) throws GameException {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
@@ -37,6 +45,8 @@ public class MainShip extends Sprite {
         bulletV = new Vector2(0, 0.5f);
         v0 = new Vector2(0.5f, 0);
         v = new Vector2();
+        shootTimer = Rnd.nextFloat(0.1f, 0.1f);
+        bulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds/bullet.wav"));
     }
 
     @Override
@@ -56,6 +66,12 @@ public class MainShip extends Sprite {
         if (getRight() > worldBounds.getRight()) {
             setRight(worldBounds.getRight());
             stop();
+        }
+
+        shootTimer += delta;
+        if (shootTimer >= SHOOT_SPEED) {
+            shootTimer = 0;
+            shoot();
         }
     }
 
@@ -142,6 +158,7 @@ public class MainShip extends Sprite {
     public void shoot() {
         Bullet bullet = bulletPool.obtain();
         bullet.set(this, bulletRegion, pos, bulletV, 0.01f, worldBounds, 1);
+        bulletSound.play(1.0f);
     }
 
     private void moveRight() {
