@@ -16,6 +16,7 @@ import my.home.stargame.math.Rect;
 import my.home.stargame.pool.BulletPool;
 import my.home.stargame.pool.EnemyPool;
 import my.home.stargame.sprites.Background;
+import my.home.stargame.sprites.Bullet;
 import my.home.stargame.sprites.Enemy;
 import my.home.stargame.sprites.MainShip;
 import my.home.stargame.sprites.Star;
@@ -138,6 +139,8 @@ public class GameScreen extends BaseScreen {
 
     private void checkCollisions() {
         List<Enemy> enemyList = enemyPool.getActiveObjects();
+        List<Bullet> bulletList = bulletPool.getActiveObjects();
+
         for (Enemy enemy : enemyList) {
             if (enemy.isDestroyed()) {
                 continue;
@@ -145,6 +148,14 @@ public class GameScreen extends BaseScreen {
             float minDist = enemy.getHalfWidth() + mainShip.getHalfWidth();
             if (mainShip.pos.dst(enemy.pos) < minDist) {
                 enemy.destroy();
+            }
+            //Не совсем удачная попытка реализовать уничтожение вражеских кораблей
+            // (они друг друга тоже стреляют) :(
+            for (Bullet bullet : bulletList) {
+               if (enemy != bullet.getOwner() && enemy.pos.dst(bullet.pos) < enemy.getHalfWidth()) {
+                   enemy.destroy();
+                   bullet.destroy();
+               }
             }
         }
     }

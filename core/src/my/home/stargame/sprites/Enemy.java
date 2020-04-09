@@ -9,6 +9,7 @@ import my.home.stargame.math.Rect;
 import my.home.stargame.pool.BulletPool;
 
 public class Enemy extends Ship {
+    private Vector2 approachSpeedV;
 
     public Enemy(BulletPool bulletPool, Rect worldBounds) {
         this.bulletPool = bulletPool;
@@ -16,6 +17,7 @@ public class Enemy extends Ship {
         v = new Vector2();
         v0 = new Vector2();
         bulletV = new Vector2();
+        approachSpeedV = new Vector2(0, -0.8f);
     }
 
     @Override
@@ -23,6 +25,12 @@ public class Enemy extends Ship {
         super.update(delta);
         if (getBottom() <= worldBounds.getBottom()) {
             destroy();
+        }
+        if(getTop() > worldBounds.getTop()) {
+            this.v.set(approachSpeedV);
+        } else {
+            this.v.set(v0);
+            isOnScreen = true;
         }
     }
 

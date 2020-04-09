@@ -26,6 +26,8 @@ public abstract class Ship extends Sprite {
     protected float reloadInterval;
     protected float reloadTimer;
 
+    protected boolean isOnScreen;
+
     public Ship() {
     }
 
@@ -38,8 +40,10 @@ public abstract class Ship extends Sprite {
         pos.mulAdd(v, delta);
         reloadTimer += delta;
         if (reloadTimer >= reloadInterval) {
-            reloadTimer = 0f;
-            shoot();
+            if (isOnScreen) {
+                shoot();
+                reloadTimer = 0f;
+            }
         }
     }
 
